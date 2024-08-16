@@ -56,8 +56,8 @@ template NextPC() {
     var context = is_halt + is_jump * 2;
 
     pc_candidates[0] <== pc + 1;  // No jump; next instruction
-    pc_candidates[1] <== operand; // Jump to operand
-    pc_candidates[2] <== pc;      // Halt: do nothing
+    pc_candidates[1] <== pc;      // Halt: do nothing
+    pc_candidates[2] <== operand; // Jump to operand
 
     mux.sel <== context;
     mux.inp <== pc_candidates;

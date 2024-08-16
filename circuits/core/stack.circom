@@ -84,7 +84,7 @@ template SubSuppl(STACK_SIZE) {
         cmp_sub[i].in[0] <== i;
         cmp_sub[i].in[1] <== sp - 1;
         is_index_sub[i] <== cmp_sub[i].out;
-        tmp0[i] <== is_index_sub[i] * (stack[i] - stack[i + 1]);
+        tmp0[i] <== is_index_sub[i] * (stack[i + 1] - stack[i]);
         tmp1[i] <== (1 - is_index_sub[i]) * stack[i];
         stack_next[i] <== tmp0[i] + tmp1[i];
     }
@@ -95,16 +95,22 @@ template PickSuppl(STACK_SIZE) {
     signal input stack[STACK_SIZE];
     signal input sp;
     signal input operand;
+    signal input opcode;
     signal output stack_next[STACK_SIZE];
 
     component mux_pick = SinglMux(STACK_SIZE);
+    component cmp_op = IsEqual();
     component cmp_pick[STACK_SIZE];
     signal tv; // target value
     signal is_index_pick[STACK_SIZE];
     signal tmp0[STACK_SIZE];
     signal tmp1[STACK_SIZE];
 
-    var tp = sp - operand; // target pointer
+    cmp_op.in[0] <== opcode;
+    cmp_op.in[1] <== 6;
+    signal is_pick <== cmp_op.out;
+
+    var tp = (sp - operand) * is_pick; // target pointer
     mux_pick.inp <== stack;
     mux_pick.sel <== tp;
     tv <== mux_pick.out;
@@ -167,6 +173,7 @@ template NextStack(STACK_SIZE) {
     pick_suppl.stack <== stack;
     pick_suppl.sp <== sp;
     pick_suppl.operand <== operand;
+    pick_suppl.opcode <== opcode;
     stack_candidates[6] <== pick_suppl.stack_next;
 
     // 7. JMP (do nothing)
