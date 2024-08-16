@@ -1,10 +1,10 @@
 # zk-LeeVM
 
-zk-LeeVM is a simple virtual machine that is designed to run a simple assembly
-language. It is a stack-based virtual machine that uses a stack to store data
-and instructions. The virtual machine is designed to be simple and easy to
-understand, making it a great tool for learning about virtual machines written in
-zk circuits.
+zk-LeeVM is a simple virtual machine written in Circom that is designed to run
+a simple assembly-like language. It is a stack-based virtual machine that uses
+a stack to store data and instructions. The virtual machine is designed to be
+simple and easy to understand, making it a great tool for learning about
+virtual machines with zero-knowledge proofs.
 
 ## Supported Instructions
 
@@ -13,6 +13,7 @@ The following instructions are supported by zk-LeeVM:
 - `HALT`: Halts the virtual machine.
 - `PUSH <value>`: Pushes a value onto the top of the stack.
 - `POP`: Pops a value from the top of the stack.
+- `DROP`: Drops the bottom value from the stack.
 - `ADD`: Pops two values from the stack, adds them together, and pushes the result onto the stack.
 - `SUB`: Pops two values from the stack, subtracts the second value from the first value, and pushes the result onto the stack.
 - `PICK <index>`: Pushes the value at the specified index onto the stack. (0 is the top of the stack)
