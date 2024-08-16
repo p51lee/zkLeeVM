@@ -4,6 +4,7 @@ include "./util/mux4.circom";
 include "./util/mux.circom";
 include "./core/stack_pointer.circom";
 include "./core/program_counter.circom";
+include "./core/stack.circom";
 
 // 9-opcode
 // 0: HALT (Stop the program)
@@ -25,19 +26,21 @@ template LeeVM(G) {
     signal output result; // Final result after execution; the top of the stack
 
     var clk;
-    
+
     signal instr[G][2]; // executed instrs: instr[i] = op at clock cycle i
 
     // states: G+1 states, including the initial state
     signal stack[G+1][STACK_SIZE]; // stack trace; stack[i] = stack before ith op
-    signal topvl[G+1]; // stack top value trace
+    signal topvl[G]; // stack top value trace
     signal sp[G+1]; // stack pointer trace
     signal pc[G+1]; // program counter log
 
     component mux_sp_topvl[G]; // stack pointer selects the top value
     component mux_pc_instr[G]; // program counter selects the instruction
-    component mux_instr_sp[G]; // instruction selects the next stack pointer
-    component mux_instr_pc[G]; // instruction selects the next program counter
+    component mux_final = SinglMux(STACK_SIZE); // final result is the top value of the stack
+    component next_sp[G];
+    component next_pc[G];
+    component next_stack[G];
 
     // Initialize the stack
     for (var i = 0; i < STACK_SIZE; i++) {
@@ -49,35 +52,47 @@ template LeeVM(G) {
     for (clk = 0; clk < G; clk++) {
         mux_sp_topvl[clk] = SinglMux(STACK_SIZE);
         mux_pc_instr[clk] = MultiMux(PROGRAM_SIZE, 2);
-        mux_instr_sp[clk] = NextSP();
-        mux_instr_pc[clk] = NextPC();
+        next_sp[clk] = NextSP();
+        next_pc[clk] = NextPC();
+        next_stack[clk] = NextStack(STACK_SIZE);
 
         // Get the top value of the stack
         mux_sp_topvl[clk].sel <== sp[clk];
         mux_sp_topvl[clk].inp <== stack[clk];
         topvl[clk] <== mux_sp_topvl[clk].out;
-        
+
         // Get current opcode and operand
         mux_pc_instr[clk].sel <== pc[clk];
         mux_pc_instr[clk].inp <== program;
         instr[clk] <== mux_pc_instr[clk].out;
         var opcode = instr[clk][0];
         var operand = instr[clk][1];
-    
+
         // Update stack pointer
-        mux_instr_sp[clk].sp <== sp[clk];
-        mux_instr_sp[clk].opcode <== opcode;
-        sp[clk + 1] <== mux_instr_sp[clk].sp_next;
+        next_sp[clk].sp <== sp[clk];
+        next_sp[clk].opcode <== opcode;
+        sp[clk + 1] <== next_sp[clk].sp_next;
 
         // Update program counter
-        mux_instr_pc[clk].topvl <== topvl[clk];
-        mux_instr_pc[clk].pc <== pc[clk];
-        mux_instr_pc[clk].opcode <== opcode;
-        mux_instr_pc[clk].operand <== operand;
-        pc[clk + 1] <== mux_instr_pc[clk].pc_next;
+        next_pc[clk].topvl <== topvl[clk];
+        next_pc[clk].pc <== pc[clk];
+        next_pc[clk].opcode <== opcode;
+        next_pc[clk].operand <== operand;
+        pc[clk + 1] <==next_pc[clk].pc_next;
 
-        // TODO: Update the stack
-
+        // Update stack
+        next_stack[clk].stack <== stack[clk];
+        next_stack[clk].sp <== sp[clk];
+        next_stack[clk].opcode <== opcode;
+        next_stack[clk].operand <== operand;
+        stack[clk + 1] <== next_stack[clk].stack_next;
     }
 
-component main = LeeVM(1);
+    var final_stack[STACK_SIZE] = stack[G];
+    mux_final.inp <== final_stack;
+    mux_final.sel <== sp[G];
+    result <== mux_final.out;
+}
+
+component main = LeeVM(16);
+
