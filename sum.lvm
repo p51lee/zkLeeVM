@@ -1,0 +1,20 @@
+  PUSH 0        ; Initialize sum with 0  : [<sum>]
+  PUSH 1        ; Initialize counter with 1  : [<counter>, <sum>]
+LOOP:
+  PICK 0        ; Duplicate the top value of the stack : [<counter>, <counter>, <sum>]
+  PUSH 10       ; Push the value 10 onto the stack : [10, <counter>, <counter>, <sum>]
+  SUB           ; Subtract 10 from the counter : [<counter - 100>, <counter>, <sum>]
+  JZ END        ; If the result is zero, jump to END : [<counter>, <sum>]
+  PICK 1        ; Duplicate the sum value : [<sum>, <counter>, <sum>]
+  PICK 1        ; Duplicate the counter value : [<counter>, <sum>, <counter>, <sum>]
+  ADD           ; Add the counter to the sum : [<new sum = sum + counter>, <counter>, <sum>]
+  PICK 1        ; Duplicate the counter value : [<counter>, <new_sum>, <counter>, <sum>]
+  DROP          ; Remove the sum from the stack : [<counter>, <new_sum>, <counter>]
+  DROP          ; Remove the counter from the stack : [<counter>, <new_sum>]
+  PUSH 1        ; Push the value 1 onto the stack : [1, <counter>, <new_sum>]
+  ADD           ; Add 1 to the counter : [<new_counter = counter + 1>, <new_sum>]
+  JMP LOOP      ; Jump back to LOOP
+END:
+  POP           ; Remove the counter from the stack : [<sum>]
+  HALT          ; Stop the program : [<sum>]
+

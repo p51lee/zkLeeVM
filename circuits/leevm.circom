@@ -93,15 +93,8 @@ template LeeVM(G, STACK_SIZE, PROGRAM_SIZE) {
     mux_final.sel <== sp[G];
     result <== mux_final.out;
     log("result: ", result);
-    // log("trace 0: pc: ", pc[0]);
-    // log("trace 1: pc: ", pc[1]);
-    // log("trace 2: pc: ", pc[2]);
-    // log("trace 3: pc: ", pc[3]);
-    // log("trace 4: pc: ", pc[4]);
-    // log("trace 5: pc: ", pc[5]);
-    // log("trace 6: pc: ", pc[6]);
-    // log("trace 7: pc: ", pc[7]);
 }
 
-component main = LeeVM(8, 8, 8);
+// gas limit, stack size, program size
+component main = LeeVM(1024, 8, 32);
 
