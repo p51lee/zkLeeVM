@@ -2,17 +2,6 @@ pragma circom 2.0.0;
 
 include "../util/mux.circom";
 
-// 9-opcode
-// 0: HALT (Stop the program)
-// 1: PUSH (Push the operand to the stack)
-// 2: POP  (Remove the top element of the stack)
-// 3: DROP (Remove the bottom element of the stack)
-// 4: ADD  (Add the top two elements of the stack)
-// 5: SUB  (Subtract the top two elements of the stack)
-// 6: PICK (Copy the nth element of the stack to the top of the stack)
-// 7: JMP  (Jump to the operand)
-// 8: JZ   (Jump if the top element of the stack is zero, and remove it from the stack)
-
 template NextSP() {
     var INSTR_SET_SIZE = 9;
     signal input sp;

@@ -40,6 +40,11 @@ elif [ "$1" = "exec" ]; then
         exit 1
     fi
 
+    # Step 0: Check if there's a directory named "inputs" and create it if it doesn't exist
+    if [ ! -d "inputs" ]; then
+        mkdir inputs
+    fi
+
     INPUT_FILE="$2"
     SIZE="$3"
 

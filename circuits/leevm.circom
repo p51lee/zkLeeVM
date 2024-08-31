@@ -1,6 +1,5 @@
 pragma circom 2.0.0;
 
-include "./util/mux4.circom";
 include "./util/mux.circom";
 include "./core/stack_pointer.circom";
 include "./core/program_counter.circom";
@@ -18,8 +17,6 @@ include "./core/stack.circom";
 // 8: JZ   (Jump if the top element of the stack is zero, and remove it from the stack)
 
 template LeeVM(G, STACK_SIZE, PROGRAM_SIZE) {
-    // var STACK_SIZE = 16;
-    // var PROGRAM_SIZE = 16;
     var INSTR_SET_SIZE = 9;
 
     signal input program[PROGRAM_SIZE][2];  // The program, where each instruction is a pair (opcode, operand)

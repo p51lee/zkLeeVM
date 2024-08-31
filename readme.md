@@ -28,7 +28,7 @@ An example program that calculates the sum of the numbers 1 to 9 is shown below:
 LOOP:
   PICK 0        ; Duplicate the top value of the stack : [<counter>, <counter>, <sum>]
   PUSH 10       ; Push the value 10 onto the stack : [10, <counter>, <counter>, <sum>]
-  SUB           ; Subtract 10 from the counter : [<counter - 100>, <counter>, <sum>]
+  SUB           ; Subtract 10 from the counter : [<counter - 10>, <counter>, <sum>]
   JZ END        ; If the result is zero, jump to END : [<counter>, <sum>]
   PICK 1        ; Duplicate the sum value : [<sum>, <counter>, <sum>]
   PICK 1        ; Duplicate the counter value : [<counter>, <sum>, <counter>, <sum>]
